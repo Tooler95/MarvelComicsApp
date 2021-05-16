@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import {AppBar, Toolbar, IconButton, MenuItem, Menu, Icon} from '@material-ui/core/';
+import {AppBar, Toolbar, IconButton, MenuItem, Menu} from '@material-ui/core/';
 import { SidebarData } from './NavData';
 import Settings from '@material-ui/icons/Settings';
 import MoreIcon from '@material-ui/icons/MoreVert';
@@ -82,8 +82,8 @@ export default function NavBar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
-  const isMenuOpen = (anchorEl);
-  const isMobileMenuOpen = (mobileMoreAnchorEl);
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);

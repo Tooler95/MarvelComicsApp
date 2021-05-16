@@ -1,24 +1,32 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Visibility } from '@material-ui/icons';
-import { Typography, AccordionSummary, CardMedia } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { Typography, Grid } from '@material-ui/core';
 
 
 const useStyles = makeStyles(() =>
     createStyles({
+        root: {
+            border: '2px solid white',
+            borderTop: '0'
+        },
         accordion: {
-            borderTop: '3px solid #2a2a2a',
-            backgroundColor: '#3f3f3f',
+            backgroundColor: '#151515',
             color: '#d3d3d3',
+            padding: '.5em 1em .5em 1em',
+            fontFamily: 'Roboto',
+            "&:hover": {
+                backgroundColor: '#3f3f3f',
+                cursor: 'pointer',
+                color: '#9bf09b',
+            }
         },
         activeAccordion: {
-            borderTop: '3px solid #2a2a2a',
             color: '#9bf09b',
-        }
+            backgroundColor: '#3f3f3f',
+        },
     })
 )
-
-
 
 export default function CreateAccordion(props) {
     const changeContent = props.changeContent
@@ -33,20 +41,31 @@ export default function CreateAccordion(props) {
     const displayAccordion = (props) => {
         const type = props.type
         return (
-            type.map((data, index) => (
-
+            <div className={classes.root}>
+            {type.map((data, index) => (
                 data.data && data.data.available !== 0 &&
-                <AccordionSummary
-                    expandIcon={<Visibility color="action" />}
-                    className={data.name === active ? classes.activeAccordion : classes.accordion}
-
+                <Grid container
+                    direction="row"
+                    title={'View ' + data.name + ' for ' + name}
+                    key={index}
+                    className={data.name === active ? `${classes.activeAccordion} ${classes.accordion}` : classes.accordion}
+                    onClick={() => { changeContent({ activeItem: item, mediaType: mediaType, type: data.name, name: name, URI: data.data.collectionURI }) }}
                 >
-                    <Typography onChange={props.handleClose} onClick={() => { changeContent({ activeItem: item, mediaType: mediaType, type: data.name, name: name, URI: data.data.collectionURI }) }} style={{ width: '100%' }} key={index} variant="h6">
-                        <span>{data.name}</span>
-                        <span style={{ float: 'right' }}>({data.data.available})</span>
-                    </Typography>
-                </AccordionSummary>
-            ))
+                    <Grid item xs={2}>
+                        <Typography variant="h6" style={{paddingTop: '.25em' }}>
+                            {active === data.name ? <Visibility /> : <VisibilityOff />}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Typography variant="h6">{data.name}</Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography variant="h6">({data.data.available})</Typography>
+                    </Grid>
+                </Grid>
+
+            ))}
+            </div>
         )
     }
     if (mediaType !== undefined) {

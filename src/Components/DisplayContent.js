@@ -20,17 +20,11 @@ const useStyles = makeStyles(() =>
             justifyContent: 'center',
             alignItems: 'center'
         },
-        accordion: {
-            width: '100%',
-        },
         dialogHead: {
             width: '100%',
             textAlign: 'center',
             fontSize: '24px',
             fontFamily: 'Roboto'
-        },
-        dialog: {
-           
         },
         overlayFont: {
             position: "absolute",
@@ -98,29 +92,24 @@ function DisplayContent(props) {
 
     }
 
-    const pageOptions = () => {
-        return (
+    return (
+        <div className={classes.root}>
+            
+            <Typography variant="h6">
             <span className={classes.pageBtn}>
-                <Button className={classes.pageBtn} onClick={props.nextPage}><SkipNext fontSize="large" /></Button>
+                <Button className={classes.pageBtn} onClick={() => props.changePage('next')}><SkipNext fontSize="large" /></Button>
                 <Button className={classes.pageBtn}>{props.controls.page}</Button>
 
                 {props.controls.offset !== 0 &&
-                    <Button className={classes.pageBtn} onClick={props.prevPage}><SkipPrevious fontSize="large" /></Button>
+                    <Button className={classes.pageBtn} onClick={() => props.changePage('prev')}><SkipPrevious fontSize="large" /></Button>
 
                 }
             </span>
-        )
-    }
-
-    return (
-        <div className={classes.root}>
-            <Typography variant="h6">
-                {pageOptions()}
-                <h6>Tesing github commit</h6>
             </Typography>
-            <Dialog className={classes.dialog} open={open} onClose={handleClose} fullWidth maxWidth="xs">
+            <div className={classes.dialogWrapper}>
+            <Dialog open={open} onClose={handleClose} maxWidth="xs">
 
-                <Accordion defaultExpanded style={{ margin: '0', padding: '0' }}>
+                <Accordion defaultExpanded style={{ margin: '0', padding: '0', border: '2px solid white', borderBottom: '0' }}>
                     <AccordionSummary style={{backgroundColor: '#2a2a2a', color: 'white'}}>
                         <Typography className={classes.dialogHead}>{item.name || item.title || item.fullName}</Typography>
                     </AccordionSummary>
@@ -129,7 +118,6 @@ function DisplayContent(props) {
 
                             <Grid container className={classes.centerElement} style={{backgroundColor: '#2a2a2a'}}>
                                 <Grid item md={10}>
-                                    <DialogContentText>
                                         {(item.thumbnail !== undefined && item.thumbnail !== null && item.thumbnail.path !== noImage) &&
                                             <Card className={classes.card}>
                                                 <CardMedia component="img"
@@ -140,11 +128,10 @@ function DisplayContent(props) {
                                             </Card>
 
                                         }
-                                    </DialogContentText>
                                 </Grid>
                                 <Grid item md={12}>
-                                    <DialogContentText id="alert-dialog-slide-description">
-                                        <Typography style={{ margin: '1em', color: 'white' }}>{item.description}</Typography>
+                                    <DialogContentText id="alert-dialog-slide-description" style={{ margin: '1em', color: 'white' }}>
+                                       {item.description}
                                     </DialogContentText>
                                 </Grid>
                             </Grid>
@@ -155,13 +142,14 @@ function DisplayContent(props) {
 
                 {CreateAccordion({ type: controls.mediaType, active: props.media.mediaType, item: item, changeContent: props.changeContent })}
             </Dialog>
+            </div>
 
             <Grid container spacing={2}>
                 {data && data.map((media, index) => {
                     return (
-                        <>
+                        <React.Fragment key={index}>
                             {(media.thumbnail.path !== noImage && media.thumbnail.path !== placeholderImage || showImages === false) &&
-                                <Grid key={index} lg={2} md={3} sm={4} xs={6} item className={classes.items}>
+                                <Grid lg={2} md={3} sm={4} xs={6} item className={classes.items}>
                                     <Card className={item.id === media.id ? classes.activeCard : classes.card}>
                                         <CardActionArea>
                                             <CardMedia
@@ -175,7 +163,7 @@ function DisplayContent(props) {
                                     <h4 className={classes.itemName}>{media.name || media.title || media.fullName}</h4>
                                 </Grid>
                             }
-                        </>
+                        </React.Fragment>
                     )
                 })}
             </Grid>

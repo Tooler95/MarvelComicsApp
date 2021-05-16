@@ -11,6 +11,7 @@ const md5 = require('md5');
 
 export default async function search(props) {
 
+
     if(props.defaultSearch === true){ //default search Meaning requesting all data for item
     const type = props.type
     const offset = props.offset

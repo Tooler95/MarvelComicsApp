@@ -5,7 +5,6 @@ import NavBar from './Components/NavBar'
 import ActiveMedia from './Components/ActiveMedia'
 import { Grid} from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
 import Search from './Components/search';
 
 const useStyles = makeStyles(() =>
@@ -63,7 +62,6 @@ function App() {
   })
 
   const getMediaType = async (props) => {
-    console.log(props);
     props.item === '' && setActiveMedia('')
     let defaultSearch;
     props.defaultSearch === false ? defaultSearch = false : defaultSearch = true;
@@ -78,7 +76,6 @@ function App() {
       data: requestedMedia.results,
       page: props.page,
       url: props.url,
-      pageHead: props.pageHead
     });
   }
 
@@ -88,22 +85,24 @@ function App() {
     const a2 = item.type
     setActiveMedia({ ...activeItem, type: a1, mediaType: a2 })
     await setControls({});
-    getMediaType({ type: controls.mediaType, page: 1, offset: 0, defaultSearch: false, url: item.URI, pageHead: '' })
+    getMediaType({ type: controls.mediaType, page: 1, offset: 0, defaultSearch: false, url: item.URI})
          window.scrollTo(0, 0)
   }
 
-
-
-  const nextPage = async () => {
+  const changePage = async (page) => {
+    const action = page
     {
-      controls.pageHead === undefined ?
-        await getMediaType({ type: controls.mediaType, offset: controls.offset + 18, page: controls.page + 1 })
+      activeMedia === '' ? 
+       action === 'next' ?
+            await getMediaType({ type: controls.mediaType, offset: controls.offset + 18, page: controls.page + 1 })
+            :
+            await getMediaType({ type: controls.mediaType, offset: controls.offset - 18, page: controls.page - 1 })    
+      :
+       action === 'prev' ?
+        await getMediaType({ type: controls.mediaType, page: controls.page - 1, offset: controls.offset - 18, defaultSearch: false, url: controls.url })
         :
-        await getMediaType({ type: controls.mediaType, page: controls.page + 1, offset: controls.offset + 18, defaultSearch: false, url: controls.url, pageHead: controls.pageHead })
+        await getMediaType({ type: controls.mediaType, page: controls.page + 1, offset: controls.offset + 18, defaultSearch: false, url: controls.url })
     }
-  }
-  const prevPage = async () => {
-    await getMediaType({ type: controls.mediaType, offset: controls.offset - 18, page: controls.page - 1, defaultSearch: false, url: controls.url, pageHead: controls.pageHead })
   }
 
 
@@ -136,9 +135,9 @@ function App() {
           </Grid>}
 
 
-          <Grid className={classes.content} lg={activeMedia ? 9 : 12} md={activeMedia ? 8 : 12} sm={12} xs={12}>
+          <Grid item className={classes.content} lg={activeMedia ? 9 : 12} md={activeMedia ? 8 : 12} sm={12} xs={12}>
             {loading === false ?
-              <DisplayContent changeContent={changeContent} nextPage={nextPage} prevPage={prevPage} media={activeMedia} controls={controls} />
+              <DisplayContent changeContent={changeContent} changePage={changePage} media={activeMedia} controls={controls} />
               :
               loadingSymbol()
             }
